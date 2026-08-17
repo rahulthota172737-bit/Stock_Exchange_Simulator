@@ -38,6 +38,13 @@ public class OrderBook {
     public Double getBestAsk() {
         return sellOrders.getBestPrice();
     }
+    public Order getBestBuyOrder() {
+        return buyOrders.getBestOrder();
+    }
+
+    public Order getBestSellOrder() {
+        return sellOrders.getBestOrder();
+    }
 
     public Double getSpread() {
 

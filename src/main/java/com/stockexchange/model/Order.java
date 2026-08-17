@@ -7,6 +7,7 @@ import com.stockexchange.enums.OrderType;
 import java.time.Instant;
 
 public class Order {
+
     private final String orderId;
     private final String traderId;
     private final String symbol;
@@ -80,14 +81,27 @@ public class Order {
         return status;
     }
 
-    public void fill(long quantity) {
+    public void open() {
+        if (status != OrderStatus.NEW) {
+            throw new IllegalStateException(
+                    "Only a NEW order can be opened"
+            );
+        }
 
+        status = OrderStatus.OPEN;
+    }
+
+    public void fill(long quantity) {
         if (quantity <= 0) {
-            throw new IllegalArgumentException("Fill quantity must be greater than zero");
+            throw new IllegalArgumentException(
+                    "Fill quantity must be greater than zero"
+            );
         }
 
         if (quantity > remainingQuantity) {
-            throw new IllegalArgumentException("Fill quantity cannot exceed remaining quantity");
+            throw new IllegalArgumentException(
+                    "Fill quantity cannot exceed remaining quantity"
+            );
         }
 
         remainingQuantity -= quantity;
@@ -101,7 +115,9 @@ public class Order {
 
     public void cancel() {
         if (isFilled()) {
-            throw new IllegalStateException("Filled order cannot be cancelled");
+            throw new IllegalStateException(
+                    "Filled order cannot be cancelled"
+            );
         }
 
         status = OrderStatus.CANCELLED;
