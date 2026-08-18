@@ -82,6 +82,7 @@ public class Order {
     }
 
     public void open() {
+
         if (status != OrderStatus.NEW) {
             throw new IllegalStateException(
                     "Only a NEW order can be opened"
@@ -92,6 +93,16 @@ public class Order {
     }
 
     public void fill(long quantity) {
+
+        if (status == OrderStatus.FILLED
+                || status == OrderStatus.CANCELLED
+                || status == OrderStatus.REJECTED) {
+
+            throw new IllegalStateException(
+                    "Order cannot be filled from status: " + status
+            );
+        }
+
         if (quantity <= 0) {
             throw new IllegalArgumentException(
                     "Fill quantity must be greater than zero"
@@ -114,9 +125,13 @@ public class Order {
     }
 
     public void cancel() {
-        if (isFilled()) {
+
+        if (status == OrderStatus.FILLED
+                || status == OrderStatus.CANCELLED
+                || status == OrderStatus.REJECTED) {
+
             throw new IllegalStateException(
-                    "Filled order cannot be cancelled"
+                    "Order cannot be cancelled from status: " + status
             );
         }
 

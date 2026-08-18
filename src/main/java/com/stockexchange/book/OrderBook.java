@@ -4,6 +4,7 @@ import com.stockexchange.enums.OrderSide;
 import com.stockexchange.model.Order;
 
 public class OrderBook {
+
     private final String symbol;
     private final BuyOrderBook buyOrders;
     private final SellOrderBook sellOrders;
@@ -35,9 +36,11 @@ public class OrderBook {
     public Double getBestBid() {
         return buyOrders.getBestPrice();
     }
+
     public Double getBestAsk() {
         return sellOrders.getBestPrice();
     }
+
     public Order getBestBuyOrder() {
         return buyOrders.getBestOrder();
     }
@@ -59,7 +62,8 @@ public class OrderBook {
     }
 
     public boolean isEmpty() {
-        return buyOrders.isEmpty() && sellOrders.isEmpty();
+        return buyOrders.isEmpty()
+                && sellOrders.isEmpty();
     }
 
     public String getSymbol() {

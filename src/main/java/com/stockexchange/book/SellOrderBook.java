@@ -5,6 +5,7 @@ import com.stockexchange.model.Order;
 import java.util.TreeMap;
 
 public class SellOrderBook {
+
     private final TreeMap<Double, PriceLevel> priceLevels;
 
     public SellOrderBook() {
@@ -12,6 +13,7 @@ public class SellOrderBook {
     }
 
     public void addOrder(Order order) {
+
         double price = order.getPrice();
 
         PriceLevel priceLevel = priceLevels.computeIfAbsent(
@@ -23,6 +25,7 @@ public class SellOrderBook {
     }
 
     public void removeOrder(Order order) {
+
         double price = order.getPrice();
 
         PriceLevel priceLevel = priceLevels.get(price);
@@ -31,13 +34,15 @@ public class SellOrderBook {
             return;
         }
 
-        priceLevel.getOrders().remove(order);
+        priceLevel.removeOrder(order);
 
         if (priceLevel.isEmpty()) {
             priceLevels.remove(price);
         }
     }
+
     public Order getBestOrder() {
+
         if (priceLevels.isEmpty()) {
             return null;
         }
@@ -48,6 +53,7 @@ public class SellOrderBook {
     }
 
     public Double getBestPrice() {
+
         if (priceLevels.isEmpty()) {
             return null;
         }

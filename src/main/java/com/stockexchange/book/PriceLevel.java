@@ -1,8 +1,12 @@
 package com.stockexchange.book;
+
 import com.stockexchange.model.Order;
+
 import java.util.ArrayDeque;
 import java.util.Deque;
+
 public class PriceLevel {
+
     private final double price;
     private final Deque<Order> orders;
 
@@ -21,6 +25,10 @@ public class PriceLevel {
 
     public Order peekFirstOrder() {
         return orders.peekFirst();
+    }
+
+    public boolean removeOrder(Order order) {
+        return orders.remove(order);
     }
 
     public boolean isEmpty() {

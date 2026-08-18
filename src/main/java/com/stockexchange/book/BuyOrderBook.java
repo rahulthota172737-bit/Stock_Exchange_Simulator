@@ -6,6 +6,7 @@ import java.util.Comparator;
 import java.util.TreeMap;
 
 public class BuyOrderBook {
+
     private final TreeMap<Double, PriceLevel> priceLevels;
 
     public BuyOrderBook() {
@@ -13,6 +14,7 @@ public class BuyOrderBook {
     }
 
     public void addOrder(Order order) {
+
         double price = order.getPrice();
 
         PriceLevel priceLevel = priceLevels.computeIfAbsent(
@@ -24,6 +26,7 @@ public class BuyOrderBook {
     }
 
     public void removeOrder(Order order) {
+
         double price = order.getPrice();
 
         PriceLevel priceLevel = priceLevels.get(price);
@@ -32,13 +35,15 @@ public class BuyOrderBook {
             return;
         }
 
-        priceLevel.getOrders().remove(order);
+        priceLevel.removeOrder(order);
 
         if (priceLevel.isEmpty()) {
             priceLevels.remove(price);
         }
     }
+
     public Order getBestOrder() {
+
         if (priceLevels.isEmpty()) {
             return null;
         }
@@ -49,6 +54,7 @@ public class BuyOrderBook {
     }
 
     public Double getBestPrice() {
+
         if (priceLevels.isEmpty()) {
             return null;
         }
