@@ -1,8 +1,12 @@
 package com.stockexchange.exchange;
 
+import com.stockexchange.account.Account;
+import com.stockexchange.account.Position;
 import com.stockexchange.enums.OrderSide;
 import com.stockexchange.enums.OrderStatus;
 import com.stockexchange.enums.OrderType;
+import com.stockexchange.enums.TransactionType;
+import com.stockexchange.history.Transaction;
 import com.stockexchange.model.Order;
 import com.stockexchange.model.Stock;
 import com.stockexchange.model.Trader;
@@ -15,6 +19,7 @@ import org.junit.jupiter.api.Test;
 
 import java.time.Instant;
 import java.util.EnumSet;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -83,6 +88,28 @@ class ExchangeIntegrationTest {
                 )
         );
 
+        Account sellerAccount =
+                exchange.getAccount("TRADER-A");
+
+        Account buyerAccount =
+                exchange.getAccount("TRADER-B");
+
+        Position sellerPosition =
+                new Position("AAPL");
+
+        sellerPosition.buy(
+                100,
+                100.0
+        );
+
+        sellerAccount
+                .getPortfolio()
+                .addPosition(sellerPosition);
+
+        buyerAccount
+                .getBalance()
+                .deposit(20_000);
+
         Order sellOrder =
                 new Order(
                         "SELL-1",
@@ -108,7 +135,6 @@ class ExchangeIntegrationTest {
                 );
 
         exchange.submitOrder(sellOrder);
-
         exchange.submitOrder(buyOrder);
 
         assertEquals(
@@ -128,6 +154,96 @@ class ExchangeIntegrationTest {
 
         assertTrue(
                 exchange.getOrderBook("AAPL").isEmpty()
+        );
+
+        assertEquals(
+                10_000,
+                sellerAccount
+                        .getBalance()
+                        .getAvailableCash()
+        );
+
+        assertEquals(
+                0,
+                sellerAccount
+                        .getPortfolio()
+                        .getTotalQuantity("AAPL")
+        );
+
+        assertEquals(
+                10_000,
+                buyerAccount
+                        .getBalance()
+                        .getAvailableCash()
+        );
+
+        assertEquals(
+                100,
+                buyerAccount
+                        .getPortfolio()
+                        .getTotalQuantity("AAPL")
+        );
+
+        List<Transaction> transactions =
+                exchange
+                        .getTransactionHistory()
+                        .getAll();
+
+        assertEquals(
+                2,
+                transactions.size()
+        );
+
+        assertEquals(
+                1,
+                exchange
+                        .getTransactionHistory()
+                        .getByTrader("TRADER-A")
+                        .size()
+        );
+
+        assertEquals(
+                1,
+                exchange
+                        .getTransactionHistory()
+                        .getByTrader("TRADER-B")
+                        .size()
+        );
+
+        assertEquals(
+                TransactionType.SELL,
+                exchange
+                        .getTransactionHistory()
+                        .getByTrader("TRADER-A")
+                        .get(0)
+                        .getType()
+        );
+
+        assertEquals(
+                TransactionType.BUY,
+                exchange
+                        .getTransactionHistory()
+                        .getByTrader("TRADER-B")
+                        .get(0)
+                        .getType()
+        );
+
+        assertEquals(
+                10_000,
+                exchange
+                        .getTransactionHistory()
+                        .getByTrader("TRADER-A")
+                        .get(0)
+                        .getTotalValue()
+        );
+
+        assertEquals(
+                10_000,
+                exchange
+                        .getTransactionHistory()
+                        .getByTrader("TRADER-B")
+                        .get(0)
+                        .getTotalValue()
         );
     }
 }

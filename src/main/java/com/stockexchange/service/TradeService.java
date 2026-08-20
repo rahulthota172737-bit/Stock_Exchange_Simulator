@@ -17,7 +17,9 @@ public class TradeService {
     public void recordTrade(Trade trade) {
 
         if (trade == null) {
-            throw new IllegalArgumentException("Trade cannot be null");
+            throw new IllegalArgumentException(
+                    "Trade cannot be null"
+            );
         }
 
         trades.add(trade);
@@ -27,14 +29,17 @@ public class TradeService {
         return List.copyOf(trades);
     }
 
-    public List<Trade> getTradesForSymbol(String symbol) {
+    public List<Trade> getTradesForSymbol(
+            String symbol) {
 
         return trades.stream()
-                .filter(trade -> trade.getSymbol().equals(symbol))
+                .filter(trade ->
+                        trade.getSymbol().equals(symbol))
                 .collect(Collectors.toList());
     }
 
-    public List<Trade> getTradesForOrder(String orderId) {
+    public List<Trade> getTradesForOrder(
+            String orderId) {
 
         return trades.stream()
                 .filter(trade ->
